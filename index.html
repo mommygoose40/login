@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINE 登入中...</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<style>
+  body{
+    font-family: Arial;
+    text-align:center;
+    padding-top: 60px;
+  }
+</style>
+</head>
+
+<body>
+<h2>登入中，請稍候...</h2>
+
+<script>
+const LIFF_ID = "2007934728-N6KeQwov"; 
+
+// ★ 你的 GAS URL（請貼你的 Web App URL）
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwSJ40MsjUmqLyFRFfi5DPjvtnmGPVQL4PYqmpF-CvOI1LsOAAzy5sVPTflT24mf95o/exec";
+
+async function main(){
+  await liff.init({ liffId: LIFF_ID });
+
+  if (!liff.isLoggedIn()){
+    liff.login();
+    return;
+  }
+
+  // 取得 LINE 使用者資料
+  const profile = await liff.getProfile();
+  const lineName = profile.displayName;
+  const lineUserId = profile.userId;
+
+  // 存入 localStorage（全站共用）
+  localStorage.setItem("lineName", lineName);
+  localStorage.setItem("lineUserId", lineUserId);
+
+  // 呼叫 GAS 檢查是否已開通
+  const url = `${GAS_URL}&lineUserId=${encodeURIComponent(lineUserId)}&nickname=${encodeURIComponent(lineName)}`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  if (data.registered){
+    // 已開通 → 直接進主畫面
+    window.location.href = "home.html";
+  } else {
+    // 未開通 → 顯示提示，不跳註冊頁
+    document.body.innerHTML = `
+      <h2>尚未開通使用權限</h2>
+      <p>請通知管理員協助開通帳號</p>
+    `;
+  }
+}
+
+main();
+</script>
+
+</body>
+</html>
