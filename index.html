@@ -86,14 +86,14 @@ const name = data.data.姓名;
 const role = data.data.權限;
 
 window.location.href =
-  `https://home-blush-six.vercel.app/?vid=${encodeURIComponent(vid)}&name=${encodeURIComponent(name)}&role=${encodeURIComponent(role)}`;
+  `/home/?vid=${encodeURIComponent(vid)}&name=${encodeURIComponent(name)}&role=${encodeURIComponent(role)}`;
   
 return;
 }
 // ⭐ 未註冊 → 只丟 unreg=1
 else {
-  window.location.href =
-    `https://home-blush-six.vercel.app/?unreg=1`;
+  window.location.href = `/home/?unreg=1`;
+  
   return;
 }
 }
